@@ -11,7 +11,7 @@ use Chuva\Php\WebScrapping\Entity\Person;
 require_once 'vendor/autoload.php';
 
 /**
- * Does the scrapping of a webpage.
+ * Does the scraping of a webpage.
  * Realiza o scraping de uma página da web.
  */
 class Scrapper {
@@ -22,40 +22,41 @@ class Scrapper {
    */
   public function scrap(\DOMDocument $dom): array {
     // Corrigido o nome da variável de $Pappers para $Papers.
-    $Papers = [];
+    $papers = [];
 
     /**
-     *
+     * Gets elements with the given class from the DOM.
+     * Obtém elementos com a classe fornecida do DOM.
      */
-    function getElement($dom, $class) {
-      $elementosComClasse = $dom->getElementsByTagName('*');
-      $elementos = [];
+    function getElementsByClass($dom, $class) {
+      $elementsWithClass = $dom->getElementsByTagName('*');
+      $elements = [];
 
-      foreach ($elementosComClasse as $elemento) {
-        if ($elemento->getAttribute('class') === $class) {
+      foreach ($elementsWithClass as $element) {
+        if ($element->getAttribute('class') === $class) {
           // Adiciona o elemento ao array.
-          $elementos[] = $elemento->textContent;
+          $elements[] = $element->textContent;
         }
-
       }
-      return $elementos;
+      return $elements;
     }
 
-    $title = getElement($dom, 'my-xs paper-title');
-    $type = getElement($dom, 'tags mr-sm');
-    $id = getElement($dom, 'volume-info');
+    $title = getElementsByClass($dom, 'my-xs paper-title');
+    $type = getElementsByClass($dom, 'tags mr-sm');
+    $id = getElementsByClass($dom, 'volume-info');
 
     /**
-     *
+     * Gets authors from the DOM.
+     * Obtém autores do DOM.
      */
     function getAuthors($dom) {
       $divAuthors = $dom->getElementsByTagName('div');
       $allAuthors = [];
 
-      foreach ($divAuthors as $Author) {
-        if ($Author->hasAttribute('class') && $Author->getAttribute('class') === 'authors') {
-          $spans = $Author->getElementsByTagName('span');
-          $authorsOfPapper = [];
+      foreach ($divAuthors as $author) {
+        if ($author->hasAttribute('class') && $author->getAttribute('class') === 'authors') {
+          $spans = $author->getElementsByTagName('span');
+          $authorsOfPaper = [];
 
           foreach ($spans as $span) {
             // Extrai o nome do autor.
@@ -63,13 +64,12 @@ class Scrapper {
             // Extrai a instituição do autor do atributo title.
             $institution = $span->getAttribute('title');
             // Adiciona o autor à lista de autores.
-            $authors = new Person($name, $institution);
-            $authorsOfPapper[] = $authors;
+            $authorObject = new Person($name, $institution);
+            $authorsOfPaper[] = $authorObject;
           }
-          $allAuthors[] = $authorsOfPapper;
+          $allAuthors[] = $authorsOfPaper;
         }
       }
-
       return $allAuthors;
     }
 
@@ -84,12 +84,12 @@ class Scrapper {
       $paper = new Paper($paperId, $title[$index], $type[$index], $authorsForPaper);
 
       // Adicionar o objeto Paper ao array de Papers.
-      $Papers[] = $paper;
+      $papers[] = $paper;
     }
 
     // Retornar o array de Papers após o loop.
-    var_dump($Papers);
-    return $Papers;
+    var_dump($papers);
+    return $papers;
   }
 
 }
