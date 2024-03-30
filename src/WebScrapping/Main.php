@@ -23,6 +23,8 @@ class Main {
 
     $data = (new Scrapper())->scrap($dom);
 
+    ExcelCreator::create($data, __DIR__ . '/../../output/output.xlsx');
+
     // Write your logic to save the output file bellow.
     // Escreva sua lógica para salvar o arquivo de saída abaixo.
     print_r($data);

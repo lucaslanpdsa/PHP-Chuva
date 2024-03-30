@@ -21,6 +21,7 @@ class Scrapper {
    * Carrega informações do artigo do HTML e retorna o array com os dados.
    */
   public function scrap(\DOMDocument $dom): array {
+    $Papers = []; // Corrigido o nome da variável de $Pappers para $Papers
 
     function getElement($dom, $class){
       $elementosComClasse = $dom->getElementsByTagName('*');
@@ -62,13 +63,25 @@ class Scrapper {
         }
       }
   
-      var_dump($allAuthors);
       return $allAuthors;
     }
   
     $authors = getAuthors($dom);
-    var_dump($authors);
-    }
-  }
 
-  //dsasaddsad
+    // Criar objetos Paper com base nos dados extraídos
+    foreach ($id as $index => $paperId) {
+      // Criar objeto Person com base na lista de autores para este papel
+      $authorsForPaper = $authors[$index];
+  
+      // Criar objeto Paper com ID, título, tipo e autores
+      $paper = new Paper($paperId, $title[$index], $type[$index], $authorsForPaper);
+  
+      // Adicionar o objeto Paper ao array de Papers
+      $Papers[] = $paper;
+  }
+  
+  // Retornar o array de Papers após o loop
+  var_dump($Papers);
+  return $Papers;
+  }
+}
